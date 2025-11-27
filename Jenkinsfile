@@ -3,8 +3,6 @@ pipeline {
 
     environment {
         MVN_HOME = '/usr/share/maven' // adapte selon ton installation Maven
-    }
-    environment {
         DOCKERHUB_USER = 'yomnagharssellaoui03'
         IMAGE_NAME     = 'student-management'
     }
@@ -32,28 +30,18 @@ pipeline {
             }
             post {
                 always {
-                    // attention au chemin exact des rapports générés par Surefire
                     junit '**/target/surefire-reports/*.xml'
                     echo "📊 Test results published"
                 }
             }
         }
-    }
 
-    post {
-        success {
-            echo "✅ Pipeline succeeded!"
-        }
-        failure {
-            echo "❌ Pipeline failed!"
-        }
-    }
-    stage('Push Docker Image') {
+        stage('Push Docker Image') {
             steps {
-                echo "🚀Pushing Docker image to DockerHub..."
+                echo "🚀 Pushing Docker image to DockerHub..."
                 withCredentials([
                     usernamePassword(
-                        credentialsId: 'dockerhub',  // Replace with your Jenkins DockerHub credentials ID
+                        credentialsId: 'dockerhub',  // Remplace par ton ID de credentials Jenkins
                         usernameVariable: 'DOCKER_USER',
                         passwordVariable: 'DOCKER_PASS'
                     )
@@ -66,5 +54,16 @@ pipeline {
                 }
             }
         }
-   x
+
+    }
+
+    post {
+        success {
+            echo "✅ Pipeline succeeded!"
+        }
+        failure {
+            echo "❌ Pipeline failed!"
+        }
+    }
 }
+
