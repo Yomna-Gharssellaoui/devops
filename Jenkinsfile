@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-        MVN_HOME        = '/usr/share/maven' 
-        DOCKERHUB_USER  = 'yomnagharssellaoui03'
-        IMAGE_NAME      = 'student-management'
+        MVN_HOME = '/usr/share/maven'
+        DOCKERHUB_USER = 'yomnagharssellaoui03'
+        IMAGE_NAME = 'student-management'
     }
 
     stages {
@@ -18,7 +18,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo "🔨 Building project with Maven..."
+                echo "🔨 Building with Maven..."
                 sh "${MVN_HOME}/bin/mvn clean install"
             }
         }
@@ -31,7 +31,6 @@ pipeline {
             post {
                 always {
                     junit '**/target/surefire-reports/*.xml'
-                    echo "📊 Test results published"
                 }
             }
         }
@@ -47,9 +46,31 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                echo "🚀 Pushing Docker image to DockerHub..."
+                echo "🚀 Pushing Docker image..."
                 withCredentials([
                     usernamePassword(
-                        credentialsId: 'docker-credentials', 
+                        credentialsId: 'docker-credentials',
                         usernameVariable: 'DOCKER_USER',
+                        passwordVariable: 'DOCKER_PASS'
+                    )
+                ]) {
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        docker push '"${DOCKERHUB_USER}"'/'"${IMAGE_NAME}"':latest
+                        docker logout
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        success{
+            echo "✅ Pipeline succeeded!"
+        }
+        failure {
+            echo "❌ Pipeline failed!"
+        }
+    }
+}
 
