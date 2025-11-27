@@ -44,4 +44,22 @@ pipeline {
             echo "❌ Pipeline failed!"
         }
     }
+    stage('Push Docker Image') {
+            steps {
+                echo "🚀Pushing Docker image to DockerHub..."
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub',  // Replace with your Jenkins DockerHub credentials ID
+                        usernameVariable: 'DOCKER_USER',
+                        passwordVariable: 'DOCKER_PASS'
+                    )
+                ]) {
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        docker push ${DOCKERHUB_USER}/${IMAGE_NAME}:latest
+                        docker logout
+                    '''
+                }
+            }
+        }
 }
