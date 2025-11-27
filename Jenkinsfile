@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     stages {
-
         stage('Checkout') {
             steps {
                 echo "🔁 Checking out repository..."
@@ -12,23 +11,35 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo "🔨Building project with Maven..."
+                echo "🔨 Building project with Maven..."
                 sh 'mvn clean install'
             }
         }
-    }
+
         stage('Test') {
             steps {
-                echo "🧪Running unit tests..."
+                echo "🧪 Running unit tests..."
                 sh 'mvn test'
             }
             post {
                 always {
-                    junit '*/target/surefire-reports/.xml'
-                    echo "📊Test results published"
+                    junit '*/target/surefire-reports/*.xml'
+                    echo "📊 Test results published"
                 }
             }
         }
+    } // end of stages
+
+    post {
+        success {
+            echo "✅ Pipeline succeeded!"
+        }
+        failure {
+            echo "❌ Pipeline failed!"
+        }
+    }
+}
+
 
     post {
         success {
