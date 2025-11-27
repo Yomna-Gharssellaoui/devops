@@ -62,4 +62,8 @@ pipeline {
                 }
             }
         }
+    environment {
+        DOCKERHUB_USER = 'yomnaghr'
+        IMAGE_NAME     = 'student-management'
+    }
 }
