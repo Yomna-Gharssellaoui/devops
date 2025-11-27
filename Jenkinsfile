@@ -1,7 +1,12 @@
 pipeline {
     agent any
 
+    environment {
+        MVN_HOME = '/usr/share/maven' // adapte selon ton installation Maven
+    }
+
     stages {
+
         stage('Checkout') {
             steps {
                 echo "🔁 Checking out repository..."
@@ -12,25 +17,24 @@ pipeline {
         stage('Build') {
             steps {
                 echo "🔨 Building project with Maven..."
-                sh 'mvn clean install'
+                sh "${MVN_HOME}/bin/mvn clean install"
             }
         }
 
         stage('Test') {
             steps {
                 echo "🧪 Running unit tests..."
-                sh 'mvn test'
+                sh "${MVN_HOME}/bin/mvn test"
             }
             post {
                 always {
-        // Correct path to Surefire test reports
-                    junit 'target/surefire-reports/*.xml'
+                    // attention au chemin exact des rapports générés par Surefire
+                    junit '**/target/surefire-reports/*.xml'
                     echo "📊 Test results published"
-    }
-}
+                }
             }
         }
-    } // end of stages
+    }
 
     post {
         success {
@@ -40,4 +44,4 @@ pipeline {
             echo "❌ Pipeline failed!"
         }
     }
-} // end of pipeline
+}
