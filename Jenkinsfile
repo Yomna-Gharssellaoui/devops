@@ -17,7 +17,7 @@ pipeline {
             }
         }
     }
-    stage('Test') {
+        stage('Test') {
             steps {
                 echo "🧪Running unit tests..."
                 sh 'mvn test'
