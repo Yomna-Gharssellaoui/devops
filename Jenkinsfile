@@ -17,6 +17,18 @@ pipeline {
             }
         }
     }
+    stage('Test') {
+            steps {
+                echo "🧪Running unit tests..."
+                sh 'mvn test'
+            }
+            post {
+                always {
+                    junit '*/target/surefire-reports/.xml'
+                    echo "📊Test results published"
+                }
+            }
+        }
 
     post {
         success {
