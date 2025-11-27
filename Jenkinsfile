@@ -6,7 +6,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo "🔁 Checking out repository..."
-                git branch: 'main', url: 'https://github.com/MayssenJemmali/student-management.git'
+                git branch: 'main', url: 'https://github.com/yumiiiiiiiiiiiiiiiiiiiiiiii/devops.git'
             }
         }
 
