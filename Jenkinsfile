@@ -13,8 +13,7 @@ pipeline {
 
     post {
         success {
-            echo "✅
- Build triggered OK"
+            echo "✅ Build triggered OK"
         }
         failure {
             echo "❌Something went wrong"
