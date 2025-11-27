@@ -38,15 +38,4 @@ pipeline {
             echo "❌ Pipeline failed!"
         }
     }
-}
-
-
-    post {
-        success {
-            echo "✅ Pipeline succeeded!"
-        }
-        failure {
-            echo "❌Pipeline failed!"
-        }
-    }
-}
+} // end of pipeline
