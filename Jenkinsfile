@@ -41,7 +41,7 @@ pipeline {
                 echo "🚀 Pushing Docker image to DockerHub..."
                 withCredentials([
                     usernamePassword(
-                        credentialsId: 'dockerhub',  // Remplace par ton ID de credentials Jenkins
+                        credentialsId: 'docker-credentials',  // Remplace par ton ID de credentials Jenkins
                         usernameVariable: 'DOCKER_USER',
                         passwordVariable: 'DOCKER_PASS'
                     )
