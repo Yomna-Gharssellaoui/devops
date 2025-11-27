@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-        MVN_HOME = '/usr/share/maven' // adapte selon ton installation Maven
-        DOCKERHUB_USER = 'yomnagharssellaoui03'
-        IMAGE_NAME     = 'student-management'
+        MVN_HOME        = '/usr/share/maven' 
+        DOCKERHUB_USER  = 'yomnagharssellaoui03'
+        IMAGE_NAME      = 'student-management'
     }
 
     stages {
@@ -25,7 +25,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                echo "🧪 Running unit tests..."
+                echo "🧪 Running tests..."
                 sh "${MVN_HOME}/bin/mvn test"
             }
             post {
@@ -36,34 +36,20 @@ pipeline {
             }
         }
 
+        stage('Build Docker Image') {
+            steps {
+                echo "🐳 Building Docker image..."
+                sh """
+                    docker build -t ${DOCKERHUB_USER}/${IMAGE_NAME}:latest .
+                """
+            }
+        }
+
         stage('Push Docker Image') {
             steps {
                 echo "🚀 Pushing Docker image to DockerHub..."
                 withCredentials([
                     usernamePassword(
-                        credentialsId: 'docker-credentials',  // Remplace par ton ID de credentials Jenkins
+                        credentialsId: 'docker-credentials', 
                         usernameVariable: 'DOCKER_USER',
-                        passwordVariable: 'DOCKER_PASS'
-                    )
-                ]) {
-                    sh '''
-                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                        docker push ${DOCKERHUB_USER}/${IMAGE_NAME}:latest
-                        docker logout
-                    '''
-                }
-            }
-        }
-
-    }
-
-    post {
-        success {
-            echo "✅ Pipeline succeeded!"
-        }
-        failure {
-            echo "❌ Pipeline failed!"
-        }
-    }
-}
 
