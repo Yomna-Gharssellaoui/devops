@@ -2,21 +2,28 @@ pipeline {
     agent any
 
     stages {
-        stage('Webhook Test') {
+
+        stage('Checkout') {
             steps {
-                echo "🚀Webhook triggered successfully!"
-                sh 'date'
-                sh 'echo "Commit received from GitHub"'
+                echo "🔁 Checking out repository..."
+                git branch: 'main', url: 'https://github.com/MayssenJemmali/student-management.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo "🔨Building project with Maven..."
+                sh 'mvn clean install'
             }
         }
     }
 
     post {
         success {
-            echo "✅ Build triggered OK"
+            echo "✅ Pipeline succeeded!"
         }
         failure {
-            echo "❌Something went wrong"
+            echo "❌Pipeline failed!"
         }
     }
 }
