@@ -4,6 +4,10 @@ pipeline {
     environment {
         MVN_HOME = '/usr/share/maven' // adapte selon ton installation Maven
     }
+    environment {
+        DOCKERHUB_USER = 'mayssenj'
+        IMAGE_NAME     = 'student-management'
+    }
 
     stages {
 
@@ -62,8 +66,5 @@ pipeline {
                 }
             }
         }
-    environment {
-        DOCKERHUB_USER = 'yomnaghr'
-        IMAGE_NAME     = 'student-management'
-    }
+   x
 }
