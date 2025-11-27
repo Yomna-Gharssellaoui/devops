@@ -23,9 +23,11 @@ pipeline {
             }
             post {
                 always {
-                    junit '*/target/surefire-reports/*.xml'
+        // Correct path to Surefire test reports
+                    junit 'target/surefire-reports/*.xml'
                     echo "📊 Test results published"
-                }
+    }
+}
             }
         }
     } // end of stages
