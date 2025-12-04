@@ -34,20 +34,14 @@ pipeline {
                 }
             }
         }
-stage('SonarQube') {
-            steps {
-                echo 'analyse de SonarQube'
-                dir('devops') {
-                    withSonarQubeEnv('sonarqube') {
-                        sh '''
-                            mvn sonar:sonar \
-                              -Dsonar.projectKey=student \
-                              -Dsonar.java.binaries=target/classes
-                        '''
-                    }
-                }
-            }
+stage('SonarQube Analysis') {
+    steps {
+        withSonarQubeEnv('SonarQube') {
+            sh "./mvnw clean verify sonar:sonar"
         }
+    }
+}
+
 
         stage('Build Docker Image') {
             steps {
