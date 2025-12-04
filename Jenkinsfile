@@ -5,6 +5,7 @@ pipeline {
         MVN_HOME = '/usr/share/maven'
         DOCKERHUB_USER = 'yomnagharssellaoui03'
         IMAGE_NAME = 'student-management'
+        IMAGE_TAG = "build-${BUILD_NUMBER}"
     }
 
     stages {
@@ -39,38 +40,33 @@ pipeline {
             steps {
                 echo "🐳 Building Docker image..."
                 sh """
-                    docker build -t ${DOCKERHUB_USER}/${IMAGE_NAME}:latest .
+                    docker build -t ${DOCKERHUB_USER}/${IMAGE_NAME}:${IMAGE_TAG} .
+                    docker tag ${DOCKERHUB_USER}/${IMAGE_NAME}:${IMAGE_TAG} ${DOCKERHUB_USER}/${IMAGE_NAME}:latest
                 """
             }
         }
+
         stage('Push Docker Image') {
-    steps {
-        echo "🚀 Pushing Docker image..."
-        withCredentials([
-            usernamePassword(
-                credentialsId: 'docker-credentials',
-                usernameVariable: 'DOCKER_USER',
-                passwordVariable: 'DOCKER_PASS'
-            )
-        ]) {
-            sh '''
-                echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-
-                # build and tag image
-                docker build -t ${DOCKERHUB_USER}/${IMAGE_NAME}:latest .
-
-                # push image
-                docker push ${DOCKERHUB_USER}/${IMAGE_NAME}:latest
-
-                docker logout
-            '''
+            steps {
+                echo "🚀 Pushing Docker image..."
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-credentials',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        docker push ${DOCKERHUB_USER}/${IMAGE_NAME}:${IMAGE_TAG}
+                        docker push ${DOCKERHUB_USER}/${IMAGE_NAME}:latest
+                        docker logout
+                    '''
+                }
+            }
         }
-    }
-}
     }
 
     post {
-        success{
+        success {
             echo "✅ Pipeline succeeded!"
         }
         failure {
@@ -78,6 +74,5 @@ pipeline {
         }
     }
 }
-
 
 
