@@ -37,7 +37,7 @@ pipeline {
 stage('SonarQube') {
             steps {
                 echo 'analyse de SonarQube'
-                dir('student-management') {
+                dir('devops') {
                     withSonarQubeEnv('sonarqube') {
                         sh '''
                             mvn sonar:sonar \
