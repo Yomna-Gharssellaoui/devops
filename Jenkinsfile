@@ -34,13 +34,20 @@ pipeline {
                 }
             }
         }
-stage('SonarQube Analysis') {
+stage('SonarQube') {
     steps {
-        withSonarQubeEnv('SonarQube') {
-            sh "./mvnw clean verify sonar:sonar"
+        echo "🔍 Running SonarQube analysis..."
+        withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+            sh '''
+                mvn sonar:sonar \
+                  -Dsonar.projectKey=student \
+                  -Dsonar.login=$SONAR_TOKEN \
+                  -Dsonar.java.binaries=target/classes
+            '''
         }
     }
 }
+
 
 
         stage('Build Docker Image') {
