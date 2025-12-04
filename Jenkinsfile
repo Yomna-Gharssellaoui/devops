@@ -43,6 +43,41 @@ pipeline {
                 """
             }
         }
+        stage('Push Docker Image') {
+    steps {
+        echo "🚀 Pushing Docker image..."
+        withCredentials([
+            usernamePassword(
+                credentialsId: 'docker-credentials',
+                usernameVariable: 'DOCKER_USER',
+                passwordVariable: 'DOCKER_PASS'
+            )
+        ]) {
+            sh '''
+                echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+
+                # build and tag image
+                docker build -t ${DOCKERHUB_USER}/${IMAGE_NAME}:latest .
+
+                # push image
+                docker push ${DOCKERHUB_USER}/${IMAGE_NAME}:latest
+
+                docker logout
+            '''
+        }
+    }
+}
+    }
+
+    post {
+        success{
+            echo "✅ Pipeline succeeded!"
+        }
+        failure {
+            echo "❌ Pipeline failed!"
+        }
+    }
+}
 
 
 
