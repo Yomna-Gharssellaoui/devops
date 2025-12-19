@@ -78,16 +78,7 @@ stage('SonarQube') {
             }
         }
     }
-
-    post {
-        success {
-            echo "✅ Pipeline succeeded!"
-        }
-        failure {
-            echo "❌ Pipeline failed!"
-        }
-    }
-    stage('Deploy to Kubernetes') {
+     stage('Deploy to Kubernetes') {
       steps {
         sh '''
           kubectl version --client
@@ -110,6 +101,16 @@ stage('SonarQube') {
         '''
       }
     }
+
+    post {
+        success {
+            echo "✅ Pipeline succeeded!"
+        }
+        failure {
+            echo "❌ Pipeline failed!"
+        }
+    }
+   
 }
 
 
