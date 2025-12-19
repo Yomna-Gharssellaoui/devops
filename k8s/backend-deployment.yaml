@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: student-backend
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app: student-backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: student-backend
+    spec:
+      containers:
+      - name: backend
+        image: your-backend-image:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DB_HOST
+          value: "mysql.dev.svc.cluster.local"
+        - name: DB_PORT
+          value: "3306"
