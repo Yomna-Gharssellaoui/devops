@@ -6,6 +6,7 @@ pipeline {
         DOCKERHUB_USER = 'yomnagharssellaoui03'
         IMAGE_NAME = 'student-management'
         IMAGE_TAG = "build-${BUILD_NUMBER}"
+          K8S_NAMESPACE = "dev"
     }
         stages {
 
